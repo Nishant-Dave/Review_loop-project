@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review {{ cafe.name }}</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9fafb;
+            text-align: center;
+            color: #111827;
+            box-sizing: border-box;
+        }
+        h1, h2 {
+            margin-bottom: 24px;
+            line-height: 1.3;
+        }
+        form {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        button[type="submit"] {
+            background-color: #4f46e5;
+            color: white;
+            border: none;
+            padding: 18px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+        button[type="submit"]:active {
+            opacity: 0.8;
+        }
+        /* Style for the initial 5 star rating buttons */
+        .rating-btn {
+            background-color: #ffffff !important;
+            color: #374151 !important;
+            border: 2px solid #e5e7eb !important;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .rating-btn:active {
+            background-color: #f3f4f6 !important;
+        }
+        
+        /* Style for the radio options */
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 18px;
+            background-color: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            text-align: left;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .radio-option input[type="radio"] {
+            transform: scale(1.5);
+            margin-right: 16px;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 16px;
+            font-size: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            box-sizing: border-box;
+            resize: vertical;
+            font-family: sans-serif;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+    </style>
+</head>
+<body>
+    
+    {% if show_feedback_form %}
+        <h2>We’re sorry 😔<br>What went wrong?</h2>
+        <form method="POST" action="">
+            {% csrf_token %}
+            <input type="hidden" name="rating" value="{{ selected_rating }}">
+            <input type="hidden" name="is_feedback" value="true">
+            
+            <div>
+                <label class="radio-option"><input type="radio" name="issue" value="Food"> Food</label>
+                <label class="radio-option"><input type="radio" name="issue" value="Service"> Service</label>
+                <label class="radio-option"><input type="radio" name="issue" value="Delay"> Delay</label>
+                <label class="radio-option"><input type="radio" name="issue" value="Cleanliness"> Cleanliness</label>
+            </div>
+            
+            <textarea id="comment" name="comment" rows="4" placeholder="Add more details (optional)"></textarea>
+            
+            <button type="submit">Submit Feedback</button>
+        </form>
+    {% else %}
+        <h1>Review {{ cafe.name }}</h1>
+        <form method="POST" action="">
+            {% csrf_token %}
+            <button type="submit" class="rating-btn" name="rating" value="5">⭐⭐⭐⭐⭐ 5 Stars</button>
+            <button type="submit" class="rating-btn" name="rating" value="4">⭐⭐⭐⭐ 4 Stars</button>
+            <button type="submit" class="rating-btn" name="rating" value="3">⭐⭐⭐ 3 Stars</button>
+            <button type="submit" class="rating-btn" name="rating" value="2">⭐⭐ 2 Stars</button>
+            <button type="submit" class="rating-btn" name="rating" value="1">⭐ 1 Star</button>
+        </form>
+    {% endif %}
+</body>
+</html>
