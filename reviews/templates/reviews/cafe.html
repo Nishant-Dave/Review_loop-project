@@ -14,22 +14,38 @@
             min-height: 100vh;
             margin: 0;
             padding: 20px;
-            background-color: #f9fafb;
-            text-align: center;
+            background-color: #f3f4f6;
             color: #111827;
             box-sizing: border-box;
         }
+        
+        .card {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 400px;
+            padding: 32px 24px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
         h1, h2 {
+            margin-top: 0;
             margin-bottom: 24px;
             line-height: 1.3;
         }
+        
         form {
             width: 100%;
-            max-width: 400px;
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
+        
         button[type="submit"] {
             background-color: #4f46e5;
             color: white;
@@ -40,39 +56,73 @@
             cursor: pointer;
             width: 100%;
             font-weight: bold;
-            transition: opacity 0.2s;
+            transition: opacity 0.2s, transform 0.1s;
         }
         button[type="submit"]:active {
-            opacity: 0.8;
-        }
-        /* Style for the initial 5 star rating buttons */
-        .rating-btn {
-            background-color: #ffffff !important;
-            color: #374151 !important;
-            border: 2px solid #e5e7eb !important;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
-        .rating-btn:active {
-            background-color: #f3f4f6 !important;
+            opacity: 0.9;
+            transform: scale(0.97);
         }
         
-        /* Style for the radio options */
-        .radio-option {
+        /* Star Rating UI */
+        .star-rating {
             display: flex;
-            align-items: center;
-            padding: 18px;
-            background-color: #ffffff;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            text-align: left;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            flex-direction: row-reverse;
+            justify-content: center;
+            gap: 4px;
+            margin-bottom: 10px;
         }
-        .radio-option input[type="radio"] {
-            transform: scale(1.5);
-            margin-right: 16px;
+        .star-btn {
+            background: none !important;
+            border: none !important;
+            padding: 0 !important;
+            font-size: 3.5rem !important;
+            color: #e5e7eb !important;
+            cursor: pointer;
+            width: auto !important;
+            box-shadow: none !important;
+            transition: color 0.2s, transform 0.1s !important;
+        }
+        
+        /* Hover to fill stars */
+        .star-btn:hover,
+        .star-btn:hover ~ .star-btn {
+            color: #fbbf24 !important;
+        }
+        
+        .star-btn:active {
+            transform: scale(0.9) !important;
+        }
+        
+        /* Pill-style issue selection */
+        .issues-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        .issue-pill {
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .issue-pill input[type="radio"] {
+            display: none;
+        }
+        .pill-text {
+            display: block;
+            padding: 14px 10px;
+            background-color: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #4b5563;
+            transition: all 0.2s ease;
+        }
+        .issue-pill input[type="radio"]:checked + .pill-text {
+            background-color: #4f46e5;
+            color: #ffffff;
+            border-color: #4f46e5;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
         }
         
         textarea {
@@ -84,44 +134,174 @@
             box-sizing: border-box;
             resize: vertical;
             font-family: sans-serif;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
         textarea:focus {
             outline: none;
             border-color: #4f46e5;
         }
+
+        .cafe-logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 10px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            border: 2px solid #ffffff;
+        }
+        .cafe-title {
+            margin-bottom: 24px;
+            font-size: 1.6rem;
+            color: #111827;
+        }
+        
+        /* Google Review CTA Button */
+        .google-cta-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #34d399, #059669);
+            color: #ffffff;
+            border: none;
+            padding: 16px 20px;
+            font-size: 1.25rem;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            box-shadow: 0 4px 14px rgba(5, 150, 105, 0.25);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .google-cta-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(5, 150, 105, 0.4);
+        }
+        .google-cta-btn:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 8px rgba(5, 150, 105, 0.2);
+        }
+        
+        /* Success State UI */
+        .success-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            gap: 12px;
+            padding: 10px 0;
+        }
+        .success-icon {
+            font-size: 4.5rem;
+            margin-bottom: -10px;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .success-heading {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: #111827;
+            margin: 0;
+            line-height: 1.1;
+        }
+        .success-message {
+            color: #4b5563;
+            font-size: 1.1rem;
+            margin: 0 0 16px 0;
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
-    
-    {% if show_feedback_form %}
-        <h2>We’re sorry 😔<br>What went wrong?</h2>
-        <form method="POST" action="">
-            {% csrf_token %}
-            <input type="hidden" name="rating" value="{{ selected_rating }}">
-            <input type="hidden" name="is_feedback" value="true">
-            
-            <div>
-                <label class="radio-option"><input type="radio" name="issue" value="Food"> Food</label>
-                <label class="radio-option"><input type="radio" name="issue" value="Service"> Service</label>
-                <label class="radio-option"><input type="radio" name="issue" value="Delay"> Delay</label>
-                <label class="radio-option"><input type="radio" name="issue" value="Cleanliness"> Cleanliness</label>
+    <div class="card">
+        {% if cafe.logo %}
+            <img src="{{ cafe.logo.url }}" alt="logo" class="cafe-logo">
+        {% endif %}
+        <h1 class="cafe-title">{{ cafe.name }}</h1>
+        
+        {% if error %}
+            <p style="color: #dc2626; font-weight: bold; margin-top: -10px; margin-bottom: 20px;">{{ error }}</p>
+        {% endif %}
+        
+        {% if show_google_review_prompt %}
+            <div class="success-state">
+                <div class="success-icon">🎉</div>
+                <h2 class="success-heading">Awesome!</h2>
+                <p class="success-message">Thanks for your support 🙌<br>Your review helps us grow and serve you better ❤️</p>
+                <a href="{{ cafe.google_review_link }}" target="_blank" style="width: 100%; text-decoration: none;">
+                    <button type="button" class="google-cta-btn">
+                        <span style="font-size: 1.4rem; line-height: 1;">⭐</span>
+                        <span>Leave a Google Review</span>
+                        <span style="font-size: 1.4rem; line-height: 1;">→</span>
+                    </button>
+                </a>
+                <p style="color: #9ca3af; font-size: 0.85rem; margin-top: 4px;">It only takes 30 seconds</p>
             </div>
-            
-            <textarea id="comment" name="comment" rows="4" placeholder="Add more details (optional)"></textarea>
-            
-            <button type="submit">Submit Feedback</button>
-        </form>
-    {% else %}
-        <h1>Review {{ cafe.name }}</h1>
-        <form method="POST" action="">
-            {% csrf_token %}
-            <button type="submit" class="rating-btn" name="rating" value="5">⭐⭐⭐⭐⭐ 5 Stars</button>
-            <button type="submit" class="rating-btn" name="rating" value="4">⭐⭐⭐⭐ 4 Stars</button>
-            <button type="submit" class="rating-btn" name="rating" value="3">⭐⭐⭐ 3 Stars</button>
-            <button type="submit" class="rating-btn" name="rating" value="2">⭐⭐ 2 Stars</button>
-            <button type="submit" class="rating-btn" name="rating" value="1">⭐ 1 Star</button>
-        </form>
-    {% endif %}
+        {% elif show_feedback_form %}
+            <h2>We’re sorry 😔 What went wrong?</h2>
+            <form method="POST" action="">
+                {% csrf_token %}
+                <input type="hidden" name="feedback_id" value="{{ feedback_id }}">
+                <input type="hidden" name="is_feedback" value="true">
+                
+                <div class="issues-container">
+                    <label class="issue-pill">
+                        <input type="radio" name="issue" value="Food">
+                        <span class="pill-text">Food</span>
+                    </label>
+                    <label class="issue-pill">
+                        <input type="radio" name="issue" value="Service">
+                        <span class="pill-text">Service</span>
+                    </label>
+                    <label class="issue-pill">
+                        <input type="radio" name="issue" value="Delay">
+                        <span class="pill-text">Delay</span>
+                    </label>
+                    <label class="issue-pill">
+                        <input type="radio" name="issue" value="Cleanliness">
+                        <span class="pill-text">Cleanliness</span>
+                    </label>
+                </div>
+                
+                <textarea id="comment" name="comment" rows="4" placeholder="Add more details (optional)"></textarea>
+                
+                <button type="submit" id="submitBtn">Submit Feedback</button>
+            </form>
+            <script>
+                document.querySelector('form').addEventListener('submit', function() {
+                    const btn = document.getElementById('submitBtn');
+                    if (btn) {
+                        // Small timeout ensures the form actually submits before disabling the button
+                        setTimeout(() => {
+                            btn.disabled = true;
+                            btn.innerText = 'Submitting...';
+                            btn.style.opacity = '0.7';
+                            btn.style.cursor = 'not-allowed';
+                        }, 0);
+                    }
+                });
+            </script>
+        {% else %}
+            <h2>How was your experience?</h2>
+            <p style="color: #6b7280; margin-top: -16px; margin-bottom: 24px; font-size: 0.95rem;">Takes less than 5 seconds</p>
+            <form method="POST" action="">
+                {% csrf_token %}
+                <div class="star-rating">
+                    <!-- Note: order is reversed due to flex-direction: row-reverse for CSS hovering -->
+                    <button type="submit" class="star-btn" name="rating" value="5">★</button>
+                    <button type="submit" class="star-btn" name="rating" value="4">★</button>
+                    <button type="submit" class="star-btn" name="rating" value="3">★</button>
+                    <button type="submit" class="star-btn" name="rating" value="2">★</button>
+                    <button type="submit" class="star-btn" name="rating" value="1">★</button>
+                </div>
+            </form>
+        {% endif %}
+    </div>
 </body>
 </html>
