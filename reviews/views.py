@@ -28,14 +28,21 @@ def cafe_view(request, slug):
                     logger.warning(f"Feedback ID {feedback_id} not found for cafe '{cafe.slug}' during update.")
             else:
                 logger.error(f"Invalid or missing feedback_id '{feedback_id}' for cafe '{cafe.slug}'")
+            
+            request.session['flash_success'] = True
             return redirect('/thank-you/')
             
         # First step: User clicked a rating button
+        raw_rating = request.POST.get('rating')
+        if not raw_rating:
+            logger.warning(f"Submission missing rating for cafe '{cafe.slug}'")
+            return render(request, 'reviews/cafe.html', {'cafe': cafe, 'error': 'Please tap a star to leave a rating.'})
+
         try:
-            rating = int(request.POST.get('rating'))
-        except (ValueError, TypeError) as e:
-            logger.error(f"Error parsing rating for cafe '{cafe.slug}': {e}")
-            return render(request, 'reviews/cafe.html', {'cafe': cafe, 'error': 'Please select a valid rating.'})
+            rating = int(raw_rating)
+        except ValueError as e:
+            logger.error(f"Error parsing rating '{raw_rating}' for cafe '{cafe.slug}': {e}")
+            return render(request, 'reviews/cafe.html', {'cafe': cafe, 'error': 'Invalid data provided. Please try again.'})
             
         if not (1 <= rating <= 5):
             logger.warning(f"Invalid rating value {rating} for cafe '{cafe.slug}'")
@@ -61,5 +68,6 @@ def cafe_view(request, slug):
     return render(request, 'reviews/cafe.html', {'cafe': cafe})
 
 def thank_you_view(request):
-    return render(request, 'reviews/thank_you.html')
+    show_flash = request.session.pop('flash_success', False)
+    return render(request, 'reviews/thank_you.html', {'show_flash': show_flash})
 

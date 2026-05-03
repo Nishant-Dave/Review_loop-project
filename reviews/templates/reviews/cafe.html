@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Review {{ cafe.name }}</title>
+    {% if cafe.logo %}
+        <link rel="icon" href="{{ cafe.logo.url }}">
+    {% else %}
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☕</text></svg>">
+    {% endif %}
     <style>
         body {
             font-family: sans-serif;
@@ -13,7 +18,7 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            padding: 20px;
+            padding: 80px 20px 20px 20px;
             background-color: #f3f4f6;
             color: #111827;
             box-sizing: border-box;
@@ -31,12 +36,50 @@
             align-items: center;
             text-align: center;
             box-sizing: border-box;
+            animation: fadeInSlideUp 0.3s ease-out;
+        }
+        
+        @keyframes fadeInSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        h1, h2 {
+        /* Typography Hierarchy */
+        h1, h2, h3 {
+            margin-top: 0;
+            color: #111827;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 16px;
+        }
+        p {
+            line-height: 1.6;
             margin-top: 0;
             margin-bottom: 24px;
-            line-height: 1.3;
+        }
+        .subheading {
+            font-size: 1.05rem;
+            color: #4b5563;
+        }
+        .text-small {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 0;
+        }
+        .error-msg {
+            color: #dc2626;
+            font-weight: bold;
+            margin-top: -10px;
+            margin-bottom: 20px;
         }
         
         form {
@@ -56,7 +99,11 @@
             cursor: pointer;
             width: 100%;
             font-weight: bold;
-            transition: opacity 0.2s, transform 0.1s;
+            transition: opacity 0.2s, transform 0.2s, background-color 0.2s;
+        }
+        button[type="submit"]:hover {
+            background-color: #4338ca;
+            transform: translateY(-2px);
         }
         button[type="submit"]:active {
             opacity: 0.9;
@@ -87,6 +134,7 @@
         .star-btn:hover,
         .star-btn:hover ~ .star-btn {
             color: #fbbf24 !important;
+            transform: scale(1.15) !important;
         }
         
         .star-btn:active {
@@ -141,19 +189,34 @@
             border-color: #4f46e5;
         }
 
-        .cafe-logo {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 10px;
+        /* Minimal Header */
+        .minimal-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 14px 20px;
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+        .header-logo {
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             object-fit: cover;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-            border: 2px solid #ffffff;
         }
-        .cafe-title {
-            margin-bottom: 24px;
-            font-size: 1.6rem;
+        .header-title {
+            font-size: 1.1rem;
+            font-weight: 700;
             color: #111827;
+            margin: 0;
         }
         
         /* Google Review CTA Button */
@@ -219,14 +282,17 @@
     </style>
 </head>
 <body>
-    <div class="card">
+    <div class="minimal-header">
         {% if cafe.logo %}
-            <img src="{{ cafe.logo.url }}" alt="logo" class="cafe-logo">
+            <img src="{{ cafe.logo.url }}" alt="logo" class="header-logo">
         {% endif %}
-        <h1 class="cafe-title">{{ cafe.name }}</h1>
+        <h1 class="header-title">{{ cafe.name }}</h1>
+    </div>
+
+    <div class="card">
         
         {% if error %}
-            <p style="color: #dc2626; font-weight: bold; margin-top: -10px; margin-bottom: 20px;">{{ error }}</p>
+            <p class="error-msg">{{ error }}</p>
         {% endif %}
         
         {% if show_google_review_prompt %}
@@ -241,10 +307,11 @@
                         <span style="font-size: 1.4rem; line-height: 1;">→</span>
                     </button>
                 </a>
-                <p style="color: #9ca3af; font-size: 0.85rem; margin-top: 4px;">It only takes 30 seconds</p>
+                <p class="text-small" style="margin-top: 12px; color: #9ca3af;">It only takes 30 seconds</p>
             </div>
         {% elif show_feedback_form %}
-            <h2>We’re sorry 😔 What went wrong?</h2>
+            <h2 style="margin-bottom: 6px;">We’re sorry 😔 What went wrong?</h2>
+            <p class="text-small" style="margin-top: 0; margin-bottom: 24px; color: #6b7280; font-style: italic;">🔒 Your feedback is private and helps us improve</p>
             <form method="POST" action="">
                 {% csrf_token %}
                 <input type="hidden" name="feedback_id" value="{{ feedback_id }}">
@@ -273,23 +340,11 @@
                 
                 <button type="submit" id="submitBtn">Submit Feedback</button>
             </form>
-            <script>
-                document.querySelector('form').addEventListener('submit', function() {
-                    const btn = document.getElementById('submitBtn');
-                    if (btn) {
-                        // Small timeout ensures the form actually submits before disabling the button
-                        setTimeout(() => {
-                            btn.disabled = true;
-                            btn.innerText = 'Submitting...';
-                            btn.style.opacity = '0.7';
-                            btn.style.cursor = 'not-allowed';
-                        }, 0);
-                    }
-                });
-            </script>
+
         {% else %}
-            <h2>How was your experience?</h2>
-            <p style="color: #6b7280; margin-top: -16px; margin-bottom: 24px; font-size: 0.95rem;">Takes less than 5 seconds</p>
+            <h2 style="margin-bottom: 6px; font-size: 1.6rem;">Loved your experience? ⭐</h2>
+            <h3 style="margin-top: 0; margin-bottom: 12px; font-size: 1.25rem; color: #4b5563; font-weight: 600;">Not satisfied? Tell us 😔</h3>
+            <p class="text-small" style="margin-top: 4px; margin-bottom: 28px;">Takes less than 5 seconds</p>
             <form method="POST" action="">
                 {% csrf_token %}
                 <div class="star-rating">
@@ -303,5 +358,30 @@
             </form>
         {% endif %}
     </div>
+    <script>
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function() {
+                const submitBtn = this.querySelector('button[type="submit"]:not(.star-btn)');
+                if (submitBtn) {
+                    setTimeout(() => {
+                        submitBtn.disabled = true;
+                        submitBtn.innerText = 'Submitting...';
+                        submitBtn.style.opacity = '0.7';
+                        submitBtn.style.cursor = 'not-allowed';
+                    }, 0);
+                }
+                
+                const starBtns = this.querySelectorAll('.star-btn');
+                if (starBtns.length > 0) {
+                    setTimeout(() => {
+                        starBtns.forEach(btn => {
+                            btn.style.pointerEvents = 'none';
+                            btn.style.opacity = '0.5';
+                        });
+                    }, 0);
+                }
+            });
+        });
+    </script>
 </body>
 </html>
