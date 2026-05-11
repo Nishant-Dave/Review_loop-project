@@ -18,10 +18,11 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from reviews.views import cafe_view, thank_you_view
+from reviews.views import cafe_view, thank_you_view, home_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', home_view, name='home_view'),
     path('cafe/<slug:slug>/', cafe_view, name='cafe_view'),
     path('thank-you/', thank_you_view, name='thank_you_view'),
 ]

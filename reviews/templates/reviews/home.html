@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select a Cafe</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 20px;
+            background-color: #f3f4f6;
+            color: #111827;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            color: #111827;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #6b7280;
+            margin-bottom: 24px;
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .search-container {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 40px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 1.1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 50px;
+            box-sizing: border-box;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+            color: #111827;
+        }
+
+        .search-input:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+        .cafe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .cafe-card {
+            background-color: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        .cafe-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .cafe-logo-container {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f9fafb;
+            border: 2px solid #e5e7eb;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .cafe-logo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cafe-placeholder {
+            font-size: 40px;
+            line-height: 1;
+        }
+
+        .cafe-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 0 0 20px 0;
+        }
+
+        .review-btn {
+            background-color: #4f46e5;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            font-size: 1.05rem;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: background-color 0.2s;
+            margin-top: auto;
+        }
+
+        .cafe-card:hover .review-btn {
+            background-color: #4338ca;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #6b7280;
+            font-size: 1.1rem;
+            grid-column: 1 / -1;
+            padding: 40px;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Choose a Cafe to Review ☕</h1>
+    <p class="subtitle">Your feedback helps cafes improve and grow</p>
+    
+    <div class="search-container">
+        <input type="text" id="cafeSearch" class="search-input" placeholder="Search cafes by name...">
+    </div>
+    
+    <div class="cafe-grid">
+        {% for cafe in cafes %}
+            <a href="{% url 'cafe_view' cafe.slug %}" class="cafe-card">
+                <div class="cafe-logo-container">
+                    {% if cafe.logo %}
+                        <img src="{{ cafe.logo.url }}" alt="{{ cafe.name }} logo" class="cafe-logo">
+                    {% else %}
+                        <span class="cafe-placeholder">☕</span>
+                    {% endif %}
+                </div>
+                <h2 class="cafe-name">{{ cafe.name }}</h2>
+                <button class="review-btn" type="button">Review Cafe</button>
+            </a>
+        {% empty %}
+            <div class="empty-state">
+                No cafes available at the moment.
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        document.getElementById('cafeSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.cafe-card');
+            
+            cards.forEach(card => {
+                const name = card.querySelector('.cafe-name').textContent.toLowerCase();
+                if (name.includes(searchTerm)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

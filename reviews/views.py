@@ -71,3 +71,11 @@ def thank_you_view(request):
     show_flash = request.session.pop('flash_success', False)
     return render(request, 'reviews/thank_you.html', {'show_flash': show_flash})
 
+def cafes_list_view(request):
+    cafes = Cafe.objects.all()
+    return render(request, 'reviews/cafes_list.html', {'cafes': cafes})
+
+
+def home_view(request):
+    cafes = Cafe.objects.all()
+    return render(request, 'reviews/home.html', {'cafes': cafes})
