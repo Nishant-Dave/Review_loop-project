@@ -44,8 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cloudinary_storage',
     'cloudinary',
+    'cloudinary_storage',
     'reviews',
 ]
 
@@ -140,20 +140,22 @@ STORAGES = {
     },
 }
 
-cloudinary_cloud_name = os.getenv('CLOUDINARY_CLOUD_NAME')
-cloudinary_api_key = os.getenv('CLOUDINARY_API_KEY')
-cloudinary_api_secret = os.getenv('CLOUDINARY_API_SECRET')
+required_cloudinary_vars = [
+    'CLOUDINARY_CLOUD_NAME',
+    'CLOUDINARY_API_KEY',
+    'CLOUDINARY_API_SECRET'
+]
 
-if not all([cloudinary_cloud_name, cloudinary_api_key, cloudinary_api_secret]):
+if not all(os.getenv(var) for var in required_cloudinary_vars):
     raise ImproperlyConfigured(
         "Cloudinary environment variables are missing! "
-        "Ensure CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET are set."
+        "Required: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET"
     )
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': cloudinary_cloud_name,
-    'API_KEY': cloudinary_api_key,
-    'API_SECRET': cloudinary_api_secret,
+    "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
+    "API_KEY": os.getenv("CLOUDINARY_API_KEY"),
+    "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
 }
 
 LOGGING = {
