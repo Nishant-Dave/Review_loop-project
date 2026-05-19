@@ -15,6 +15,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import dj_database_url
 from django.core.exceptions import ImproperlyConfigured
+import cloudinary
 
 load_dotenv()
 
@@ -140,23 +141,12 @@ STORAGES = {
     },
 }
 
-required_cloudinary_vars = [
-    'CLOUDINARY_CLOUD_NAME',
-    'CLOUDINARY_API_KEY',
-    'CLOUDINARY_API_SECRET'
-]
+if not os.getenv("CLOUDINARY_URL"):
+    raise ImproperlyConfigured("CLOUDINARY_URL environment variable is missing!")
 
-if not all(os.getenv(var) for var in required_cloudinary_vars):
-    raise ImproperlyConfigured(
-        "Cloudinary environment variables are missing! "
-        "Required: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET"
-    )
-
-CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
-    "API_KEY": os.getenv("CLOUDINARY_API_KEY"),
-    "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
-}
+cloudinary.config(
+    secure=True
+)
 
 LOGGING = {
     'version': 1,
