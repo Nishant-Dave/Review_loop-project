@@ -145,11 +145,48 @@
             padding: 40px;
         }
 
+        .analytics-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+            transition: all 0.2s ease-in-out;
+            margin-bottom: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .analytics-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+            background: linear-gradient(135deg, #4338ca, #4f46e5);
+        }
+
+        .analytics-cta:active {
+            transform: translateY(0);
+        }
+
     </style>
 </head>
 <body>
     <h1>Choose a Cafe to Review ☕</h1>
     <p class="subtitle">Your feedback helps cafes improve and grow</p>
+    
+    {% if user.is_authenticated %}
+        <a href="/analytics/" class="analytics-cta">
+            📊 Analytics Dashboard
+        </a>
+    {% else %}
+        <a href="/admin/login/" class="analytics-cta">
+            🔐 Admin Login
+        </a>
+    {% endif %}
     
     <div class="search-container">
         <input type="text" id="cafeSearch" class="search-input" placeholder="Search cafes by name...">
