@@ -5,15 +5,27 @@ from .models import Cafe, Feedback
 
 @admin.register(Cafe)
 class CafeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug', 'logo_preview')
-    readonly_fields = ('logo_preview',)
-    fields = ('name', 'slug', 'google_review_link', 'logo', 'logo_preview')
+    list_display = ('name', 'slug', 'logo_preview', 'qr_preview')
+    readonly_fields = ('logo_preview', 'qr_preview')
+    fields = ('name', 'slug', 'google_review_link', 'logo', 'logo_preview', 'qr_code', 'qr_preview')
     
     def logo_preview(self, obj):
         if obj.logo:
             return format_html('<img src="{}" style="max-height: 50px; border-radius: 5px;"/>', obj.logo.url)
         return "-"
     logo_preview.short_description = 'Logo Preview'
+
+    def qr_preview(self, obj):
+        if obj.qr_code:
+            return format_html(
+                '<div>'
+                '<img src="{0}" style="max-height: 150px; border-radius: 5px; display: block; margin-bottom: 8px;"/>'
+                '<a href="{0}" download="qr_{1}.png" style="font-weight: bold; text-decoration: underline; color: #447e9b;">Download QR Code</a>'
+                '</div>',
+                obj.qr_code.url, obj.slug
+            )
+        return "-"
+    qr_preview.short_description = 'QR Preview'
 
 
 @admin.register(Feedback)

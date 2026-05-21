@@ -27,13 +27,30 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-(gb9s2b*b@6p7pp^b=vm%vfe((!167=uwp&z9me!w7q%1iaj@9')
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-(gb9s2b*b@6p7pp^b=vm%vfe((!167=uwp&z9me!w7q%1iaj@9')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG = os.getenv('DEBUG', 'False').lower() in ('true', '1')
 
-allowed_hosts_env = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost,.onrender.com')
-ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_env.split(',') if host.strip()]
+if DEBUG:
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+else:
+    allowed_hosts_env = os.getenv('ALLOWED_HOSTS')
+    if allowed_hosts_env:
+        ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_env.split(',') if host.strip()]
+    else:
+        render_host = os.getenv('RENDER_EXTERNAL_HOSTNAME')
+        if render_host:
+            ALLOWED_HOSTS = [render_host]
+        else:
+            ALLOWED_HOSTS = []
+
+SITE_BASE_URL = os.getenv('SITE_BASE_URL')
+if not SITE_BASE_URL:
+    if DEBUG:
+        SITE_BASE_URL = 'http://127.0.0.1:8000'
+    else:
+        SITE_BASE_URL = 'https://review-loop-project.onrender.com'
 
 
 # Application definition
@@ -80,21 +97,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'feedback_loop.wsgi.application'
 
-if os.environ.get('DATABASE_URL'):
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=os.environ.get('DATABASE_URL'),
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
-    }
-else:
+if DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+else:
+    if os.environ.get('DATABASE_URL'):
+        DATABASES = {
+            'default': dj_database_url.config(
+                default=os.environ.get('DATABASE_URL'),
+                conn_max_age=600,
+                conn_health_checks=True,
+            )
+        }
+    else:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -132,21 +157,30 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-STORAGES = {
-    "default": {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
-
-if not os.getenv("CLOUDINARY_URL"):
-    raise ImproperlyConfigured("CLOUDINARY_URL environment variable is missing!")
-
-cloudinary.config(
-    secure=True
-)
+if os.getenv("CLOUDINARY_URL"):
+    STORAGES = {
+        "default": {
+            "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+    cloudinary.config(
+        secure=True
+    )
+else:
+    if not DEBUG:
+        raise ImproperlyConfigured("CLOUDINARY_URL environment variable is missing!")
+    
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
 
 LOGGING = {
     'version': 1,

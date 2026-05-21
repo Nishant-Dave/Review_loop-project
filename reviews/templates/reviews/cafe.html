@@ -360,6 +360,14 @@
             </form>
         {% endif %}
     </div>
+
+    {% if cafe.qr_code %}
+        <div style="margin-top: 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; animation: fadeInSlideUp 0.4s ease-out;">
+            <img src="{{ cafe.qr_code.url }}" alt="Scan to share" style="width: 100px; height: 100px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); background-color: #ffffff; padding: 8px; border: 1px solid #e5e7eb;">
+            <p style="font-size: 0.8rem; color: #6b7280; margin: 0; font-weight: 500;">Scan this QR to share this page</p>
+        </div>
+    {% endif %}
+
     <script>
         document.querySelectorAll('form').forEach(form => {
             form.addEventListener('submit', function() {
