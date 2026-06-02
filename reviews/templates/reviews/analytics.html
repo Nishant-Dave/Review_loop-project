@@ -815,6 +815,69 @@
                             <p class="feedback-comment">"{{ feedback.comment }}"</p>
                         {% endif %}
                         
+                        {% if feedback.rating <= 3 %}
+                            {% if feedback.ai_sentiment or feedback.ai_emotion or feedback.ai_urgency or feedback.ai_reply_1 or feedback.ai_reply_2 or feedback.ai_reply_3 %}
+                                <div class="ai-analysis-box" style="margin-top: 12px; margin-bottom: 8px; padding: 16px; background-color: rgba(99, 102, 241, 0.04); border: 1px solid rgba(99, 102, 241, 0.15); border-radius: 12px; display: flex; flex-direction: column; gap: 14px; text-align: left;">
+                                    <!-- Analysis Chips -->
+                                    <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                                        <span style="font-size: 0.8rem; font-weight: 700; color: #a855f7; text-transform: uppercase; letter-spacing: 0.5px; margin-right: 4px; display: flex; align-items: center; gap: 4px;">✨ AI Insights:</span>
+                                        {% if feedback.ai_sentiment %}
+                                            <span style="font-size: 0.75rem; padding: 4px 10px; background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #f87171; border-radius: 50px; font-weight: 600;">Sentiment: {{ feedback.ai_sentiment }}</span>
+                                        {% endif %}
+                                        {% if feedback.ai_emotion %}
+                                            <span style="font-size: 0.75rem; padding: 4px 10px; background-color: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.2); color: #c084fc; border-radius: 50px; font-weight: 600;">Emotion: {{ feedback.ai_emotion }}</span>
+                                        {% endif %}
+                                        {% if feedback.ai_urgency %}
+                                            <span style="font-size: 0.75rem; padding: 4px 10px; 
+                                                {% if feedback.ai_urgency|lower == 'high' or feedback.ai_urgency|lower == 'critical' %}
+                                                    background-color: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.25); color: #ef4444;
+                                                {% else %}
+                                                    background-color: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); color: #fbbf24;
+                                                {% endif %}
+                                                border-radius: 50px; font-weight: 600;">Urgency: {{ feedback.ai_urgency }}</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- AI Replies Suggestions -->
+                                    {% if feedback.ai_reply_1 or feedback.ai_reply_2 or feedback.ai_reply_3 %}
+                                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                                            <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">AI Suggested Responses:</span>
+                                            
+                                            {% if feedback.ai_reply_1 %}
+                                                <div class="ai-reply-card" style="display: flex; flex-direction: column; gap: 8px; padding: 12px 16px; background-color: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 10px;">
+                                                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                                                        <span style="font-size: 0.78rem; font-weight: 700; color: #818cf8; text-transform: uppercase;">Option 1</span>
+                                                        <button onclick="copyToClipboard(this, `{{ feedback.ai_reply_1|escapejs }}`)" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2); color: #818cf8; padding: 4px 10px; font-size: 0.75rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.2s ease;">📋 Copy</button>
+                                                    </div>
+                                                    <p style="margin: 0; font-size: 0.9rem; line-height: 1.4; color: #cbd5e1; font-style: normal;">{{ feedback.ai_reply_1 }}</p>
+                                                </div>
+                                            {% endif %}
+                                            
+                                            {% if feedback.ai_reply_2 %}
+                                                <div class="ai-reply-card" style="display: flex; flex-direction: column; gap: 8px; padding: 12px 16px; background-color: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 10px;">
+                                                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                                                        <span style="font-size: 0.78rem; font-weight: 700; color: #818cf8; text-transform: uppercase;">Option 2</span>
+                                                        <button onclick="copyToClipboard(this, `{{ feedback.ai_reply_2|escapejs }}`)" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2); color: #818cf8; padding: 4px 10px; font-size: 0.75rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.2s ease;">📋 Copy</button>
+                                                    </div>
+                                                    <p style="margin: 0; font-size: 0.9rem; line-height: 1.4; color: #cbd5e1; font-style: normal;">{{ feedback.ai_reply_2 }}</p>
+                                                </div>
+                                            {% endif %}
+                                            
+                                            {% if feedback.ai_reply_3 %}
+                                                <div class="ai-reply-card" style="display: flex; flex-direction: column; gap: 8px; padding: 12px 16px; background-color: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 10px;">
+                                                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                                                        <span style="font-size: 0.78rem; font-weight: 700; color: #818cf8; text-transform: uppercase;">Option 3</span>
+                                                        <button onclick="copyToClipboard(this, `{{ feedback.ai_reply_3|escapejs }}`)" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2); color: #818cf8; padding: 4px 10px; font-size: 0.75rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.2s ease;">📋 Copy</button>
+                                                    </div>
+                                                    <p style="margin: 0; font-size: 0.9rem; line-height: 1.4; color: #cbd5e1; font-style: normal;">{{ feedback.ai_reply_3 }}</p>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                        
                         <div class="feedback-header">
                             {% if feedback.issue %}
                                 <span class="feedback-issue-tag">Issue: {{ feedback.issue }}</span>
@@ -836,5 +899,24 @@
 
     </div>
 
+    <script>
+        function copyToClipboard(button, text) {
+            navigator.clipboard.writeText(text).then(function() {
+                const originalText = button.innerHTML;
+                button.innerHTML = "✅ Copied!";
+                button.style.backgroundColor = "rgba(16, 185, 129, 0.2)";
+                button.style.borderColor = "rgba(16, 185, 129, 0.3)";
+                button.style.color = "#34d399";
+                setTimeout(function() {
+                    button.innerHTML = originalText;
+                    button.style.backgroundColor = "rgba(99, 102, 241, 0.1)";
+                    button.style.borderColor = "rgba(99, 102, 241, 0.2)";
+                    button.style.color = "#818cf8";
+                }, 2000);
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>
 </body>
 </html>

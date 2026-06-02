@@ -6,6 +6,11 @@ from django.conf import settings
 
 class Cafe(models.Model):
     name = models.CharField(max_length=255)
+    tagline = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True
+    )
     slug = models.SlugField(unique=True)
     google_review_link = models.URLField()
     logo = models.ImageField(upload_to='cafe_logos/', null=True, blank=True)
@@ -20,7 +25,10 @@ class Cafe(models.Model):
             url = f"{base_url}/cafe/{self.slug}/"
             img = qrcode.make(url)
             buffer = BytesIO()
-            img.save(buffer, format='PNG')
+            try:
+                img.save(buffer, format='PNG')
+            except TypeError:
+                img.save(buffer)
             
             file_name = f'qr_{self.slug}.png'
             self.qr_code.save(file_name, ContentFile(buffer.getvalue()), save=False)
@@ -35,6 +43,20 @@ class Feedback(models.Model):
     is_positive = models.BooleanField(default=False)
     issue = models.CharField(max_length=255, null=True, blank=True)
     comment = models.TextField(blank=True, null=True)
+    customer_mobile = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True
+    )
+    consent_to_contact = models.BooleanField(
+        default=False
+    )
+    ai_sentiment = models.CharField(max_length=50, blank=True, null=True)
+    ai_emotion = models.CharField(max_length=50, blank=True, null=True)
+    ai_urgency = models.CharField(max_length=50, blank=True, null=True)
+    ai_reply_1 = models.TextField(blank=True, null=True)
+    ai_reply_2 = models.TextField(blank=True, null=True)
+    ai_reply_3 = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
